@@ -10,21 +10,21 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
+{
     Schema::create('categorias', function (Blueprint $table) {
         $table->id();
         $table->string('nombre', 150);
-        $table->text('descripcion')->nullable();
+        $table->enum('tipo', ['ingreso', 'gasto']);
+        $table->string('descripcion', 255)->nullable();
         $table->timestamps();
     });
-
-    }
+}
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-    Schema::dropIfExists('categorias');
+        Schema::dropIfExists('categorias');
     }
 };

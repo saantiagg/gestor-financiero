@@ -6,20 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('cuentas', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre', 150);
+            $table->string('descripcion', 255)->nullable();
+            $table->decimal('saldo', 18, 2)->default(0);
+            $table->string('moneda', 10)->default('COP');
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('cuentas');
