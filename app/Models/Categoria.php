@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Categoria extends Model
 {
@@ -13,4 +14,9 @@ class Categoria extends Model
         'tipo',
         'descripcion',
     ];
+
+    public function transacciones(): HasMany
+    {
+        return $this->hasMany(Transaccion::class);
+    }
 }

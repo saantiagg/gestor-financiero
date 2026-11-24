@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Cuenta extends Model
 {
@@ -21,4 +22,9 @@ class Cuenta extends Model
             'saldo' => 'decimal:2',
         ];
     }
-}
+
+    public function transacciones(): HasMany
+    {
+        return $this->hasMany(Transaccion::class);
+    }
+}   
