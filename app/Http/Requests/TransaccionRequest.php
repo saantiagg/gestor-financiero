@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Categoria;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class TransaccionRequest extends FormRequest
 {
@@ -20,6 +22,28 @@ class TransaccionRequest extends FormRequest
             'monto' => ['required', 'numeric', 'decimal:0,2', 'gt:0', 'max:999999999999999'],
             'fecha' => ['required', 'date'],
             'descripcion' => ['nullable', 'string', 'max:255'],
+        ];
+    }
+
+    
+    public function after(): array
+    {
+        return [
+            function (Validator $validator) {
+                
+                if ($validator->errors()->has('tipo') || $validator->errors()->has('categoria_id')) {
+                    return;
+                }
+
+                $categoria = Categoria::find($this->input('categoria_id'));
+
+                if ($categoria && $categoria->tipo !== $this->input('tipo')) {
+                    $validator->errors()->add(
+                        'categoria_id',
+                        "La categoría «{$categoria->nombre}» es de tipo {$categoria->tipo} y no se puede usar en un {$this->input('tipo')}."
+                    );
+                }
+            },
         ];
     }
 
