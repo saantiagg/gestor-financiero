@@ -6,6 +6,8 @@ use App\Http\Requests\TransaccionRequest;
 use App\Models\Categoria;
 use App\Models\Cuenta;
 use App\Models\Transaccion;
+use App\Services\TransaccionService;
+use Illuminate\Validation\ValidationException;
 
 class TransaccionController extends Controller
 {
@@ -28,12 +30,9 @@ class TransaccionController extends Controller
         ]);
     }
 
-    public function store(TransaccionRequest $request)
+    public function store(TransaccionRequest $request, TransaccionService $servicio)
     {
-        $datos = $request->validated();
-        $datos['creado_por'] = auth()->user()->name;
-
-        Transaccion::create($datos);
+        $servicio->crear($request->validated(), auth()->user()->name);
 
         return redirect()
             ->route('transacciones.index')
@@ -49,18 +48,24 @@ class TransaccionController extends Controller
         ]);
     }
 
-    public function update(TransaccionRequest $request, Transaccion $transaccion)
+    public function update(TransaccionRequest $request, Transaccion $transaccion, TransaccionService $servicio)
     {
-        $transaccion->update($request->validated());
+        $servicio->actualizar($transaccion, $request->validated());
 
         return redirect()
             ->route('transacciones.index')
             ->with('success', 'Transacción actualizada correctamente.');
     }
 
-    public function destroy(Transaccion $transaccion)
+    public function destroy(Transaccion $transaccion, TransaccionService $servicio)
     {
-        $transaccion->delete();
+        try {
+            $servicio->eliminar($transaccion);
+        } catch (ValidationException $e) {
+            return redirect()
+                ->route('transacciones.index')
+                ->with('error', collect($e->errors())->flatten()->first());
+        }
 
         return redirect()
             ->route('transacciones.index')
