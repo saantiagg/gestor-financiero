@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\CuentaController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::resource('categorias', CategoriaController::class)
         ->except('show')
         ->parameters(['categorias' => 'categoria']);
+
+    Route::resource('cuentas', CuentaController::class)
+        ->except('show')
+        ->parameters(['cuentas' => 'cuenta']);
 });
 
 require __DIR__.'/auth.php';
